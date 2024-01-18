@@ -1211,7 +1211,7 @@ class Table (object):
         """
         print(the text output for the table.)
         """
-        print(self.getOutput())
+        print((self.getOutput()))
 
 #------------------------------------------------------------------------------
 

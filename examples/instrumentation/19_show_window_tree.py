@@ -39,15 +39,15 @@ def show_window_tree( window, indent = 0 ):
     caption = window.get_text()
     line = ""
     if indent > 0:
-        print "|   " * indent
+        print("|   " * indent)
         line = "|   " * (indent - 1) + "|---"
     else:
-        print "|"
+        print("|")
     if caption is not None:
         line += handle + ": " + caption
     else:
         line += handle
-    print line
+    print(line)
 
     # Recursively show the child windows.
     for child in window.get_children():

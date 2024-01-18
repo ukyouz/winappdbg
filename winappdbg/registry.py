@@ -35,7 +35,7 @@ Registry access.
     Registry, RegistryKey
 """
 
-from __future__ import with_statement
+
 
 __all__ = ['Registry']
 
@@ -79,7 +79,7 @@ class _RegistryContainer (object):
         self.__default = default
 
     def __iter__(self):
-        return self.keys()
+        return list(self.keys())
 
 #==============================================================================
 
@@ -287,9 +287,9 @@ class RegistryKey (_RegistryContainer):
 
     def __unicode__(self):
         try:
-            return str(self[u''])
+            return str(self[''])
         except KeyError:
-            return u''
+            return ''
 
     def __repr__(self):
         return '<Registry key: "%s">' % self._path
@@ -666,7 +666,7 @@ class Registry (_RegistryContainer):
         """
         if path.endswith('\\'):
             path = path[:-1]
-        if not self.has_key(path):  # NOQA
+        if path not in self:  # NOQA
             raise KeyError(path)
         stack = collections.deque()
         stack.appendleft(path)

@@ -58,7 +58,7 @@ except ImportError:
         if kw.pop("use_last_error", False):
             flags |= ctypes._FUNCFLAG_USE_LASTERROR
         if kw:
-            raise ValueError("unexpected keyword argument(s) %s" % kw.keys())
+            raise ValueError("unexpected keyword argument(s) %s" % list(kw.keys()))
         try:
             return ctypes._win_functype_cache[(restype, argtypes, flags)]
         except KeyError:
@@ -121,7 +121,7 @@ except ImportError:
 
     # Fix FormatError.
     def FormatError(code):
-        code = int(long(code))
+        code = int(int(code))
         try:
             if GuessStringType.t_default == GuessStringType.t_ansi:
                 FormatMessage = windll.kernel32.FormatMessageA
@@ -142,7 +142,7 @@ except ImportError:
             pass
         if GuessStringType.t_default == GuessStringType.t_ansi:
             return "Error code 0x%.8X" % code
-        return u"Error code 0x%.8X" % code
+        return "Error code 0x%.8X" % code
     ctypes.FormatError = FormatError
 
     # Fix WinError.

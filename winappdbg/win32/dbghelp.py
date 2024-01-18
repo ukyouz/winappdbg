@@ -669,7 +669,7 @@ def UnDecorateSymbolNameW(DecoratedName, Flags = UNDNAME_COMPLETE):
     _UnDecorateSymbolNameW.errcheck = RaiseIfZero
 
     UndecoratedLength = _UnDecorateSymbolNameW(DecoratedName, None, 0, Flags)
-    UnDecoratedName = ctypes.create_unicode_buffer(u'', UndecoratedLength + 1)
+    UnDecoratedName = ctypes.create_unicode_buffer('', UndecoratedLength + 1)
     _UnDecorateSymbolNameW(DecoratedName, UnDecoratedName, UndecoratedLength, Flags)
     return UnDecoratedName.value
 
@@ -698,7 +698,7 @@ def SymGetSearchPathW(hProcess):
     _SymGetSearchPathW.errcheck = RaiseIfZero
 
     SearchPathLength = MAX_PATH
-    SearchPath = ctypes.create_unicode_buffer(u"", SearchPathLength)
+    SearchPath = ctypes.create_unicode_buffer("", SearchPathLength)
     _SymGetSearchPathW(hProcess, SearchPath, SearchPathLength)
     return SearchPath.value
 
@@ -751,7 +751,7 @@ def SymGetHomeDirectoryW(type):
     _SymGetHomeDirectoryW.errcheck = RaiseIfZero
 
     size = MAX_PATH
-    dir  = ctypes.create_unicode_buffer(u"", size)
+    dir  = ctypes.create_unicode_buffer("", size)
     _SymGetHomeDirectoryW(type, dir, size)
     return dir.value
 
@@ -796,7 +796,7 @@ SymSetHomeDirectory = GuessStringType(SymSetHomeDirectoryA, SymSetHomeDirectoryW
 #maximum length of a symbol name
 MAX_SYM_NAME = 2000
 
-class SYM_INFO(Structure):
+class SYMBOL_INFO(Structure):
     _fields_ = [
         ("SizeOfStruct",    ULONG),
         ("TypeIndex",       ULONG),
@@ -814,9 +814,9 @@ class SYM_INFO(Structure):
         ("MaxNameLen",      ULONG),
         ("Name",            CHAR * (MAX_SYM_NAME + 1)),
     ]
-PSYM_INFO = POINTER(SYM_INFO)
+PSYM_INFO = POINTER(SYMBOL_INFO)
 
-class SYM_INFOW(Structure):
+class SYMBOL_INFOW(Structure):
     _fields_ = [
         ("SizeOfStruct",    ULONG),
         ("TypeIndex",       ULONG),
@@ -834,7 +834,7 @@ class SYM_INFOW(Structure):
         ("MaxNameLen",      ULONG),
         ("Name",            WCHAR * (MAX_SYM_NAME + 1)),
     ]
-PSYM_INFOW = POINTER(SYM_INFOW)
+PSYM_INFOW = POINTER(SYMBOL_INFOW)
 
 #===============================================================================
 # BOOL WINAPI SymFromName(
@@ -849,7 +849,7 @@ def SymFromName(hProcess, Name):
     _SymFromNameA.restype = bool
     _SymFromNameA.errcheck = RaiseIfZero
 
-    SymInfo = SYM_INFO()
+    SymInfo = SYMBOL_INFO()
     SymInfo.SizeOfStruct = 88 # *don't modify*: sizeof(SYMBOL_INFO) in C.
     SymInfo.MaxNameLen = MAX_SYM_NAME
 
@@ -863,7 +863,7 @@ def SymFromNameW(hProcess, Name):
     _SymFromNameW.restype = bool
     _SymFromNameW.errcheck = RaiseIfZero
 
-    SymInfo = SYM_INFOW()
+    SymInfo = SYMBOL_INFOW()
     SymInfo.SizeOfStruct = 88 # *don't modify*: sizeof(SYMBOL_INFOW) in C.
     SymInfo.MaxNameLen = MAX_SYM_NAME
 
@@ -885,7 +885,7 @@ def SymFromAddr(hProcess, Address):
     _SymFromAddr.restype = bool
     _SymFromAddr.errcheck = RaiseIfZero
 
-    SymInfo = SYM_INFO()
+    SymInfo = SYMBOL_INFO()
     SymInfo.SizeOfStruct = 88 # *don't modify*: sizeof(SYMBOL_INFO) in C.
     SymInfo.MaxNameLen = MAX_SYM_NAME
 
@@ -900,7 +900,7 @@ def SymFromAddrW(hProcess, Address):
     _SymFromAddr.restype = bool
     _SymFromAddr.errcheck = RaiseIfZero
 
-    SymInfo = SYM_INFOW()
+    SymInfo = SYMBOL_INFOW()
     SymInfo.SizeOfStruct = 88 # *don't modify*: sizeof(SYMBOL_INFOW) in C.
     SymInfo.MaxNameLen = MAX_SYM_NAME
 

@@ -2094,7 +2094,7 @@ class _BreakpointContainer (object):
 
     def __del_running_bp_from_all_threads(self, bp):
         "Auxiliary method."
-        for (tid, bpset) in self.__runningBP.items():
+        for (tid, bpset) in list(self.__runningBP.items()):
             if bp in bpset:
                 bpset.remove(bp)
                 self.system.get_thread(tid).clear_tf()
@@ -2150,14 +2150,14 @@ class _BreakpointContainer (object):
         pid = event.get_pid()
 
         # Cleanup code breakpoints
-        for (bp_pid, bp_address) in self.__codeBP.keys():
+        for (bp_pid, bp_address) in list(self.__codeBP.keys()):
             if bp_pid == pid:
                 bp = self.__codeBP[ (bp_pid, bp_address) ]
                 self.__cleanup_breakpoint(event, bp)
                 del self.__codeBP[ (bp_pid, bp_address) ]
 
         # Cleanup page breakpoints
-        for (bp_pid, bp_address) in self.__pageBP.keys():
+        for (bp_pid, bp_address) in list(self.__pageBP.keys()):
             if bp_pid == pid:
                 bp = self.__pageBP[ (bp_pid, bp_address) ]
                 self.__cleanup_breakpoint(event, bp)
@@ -2199,7 +2199,7 @@ class _BreakpointContainer (object):
                         self.__hardwareBP[tid].remove(bp)
 
         # Cleanup code breakpoints on this module
-        for (bp_pid, bp_address) in self.__codeBP.keys():
+        for (bp_pid, bp_address) in list(self.__codeBP.keys()):
             if bp_pid == pid:
                 if process.get_module_at_address(bp_address) == module:
                     bp = self.__codeBP[ (bp_pid, bp_address) ]
@@ -2207,7 +2207,7 @@ class _BreakpointContainer (object):
                     del self.__codeBP[ (bp_pid, bp_address) ]
 
         # Cleanup page breakpoints on this module
-        for (bp_pid, bp_address) in self.__pageBP.keys():
+        for (bp_pid, bp_address) in list(self.__pageBP.keys()):
             if bp_pid == pid:
                 if process.get_module_at_address(bp_address) == module:
                     bp = self.__pageBP[ (bp_pid, bp_address) ]
@@ -2996,7 +2996,7 @@ class _BreakpointContainer (object):
         @rtype:  list of tuple( int, L{CodeBreakpoint} )
         @return: All code breakpoints as a list of tuples (pid, bp).
         """
-        return [ (pid, bp) for ((pid, address), bp) in self.__codeBP.items() ]
+        return [ (pid, bp) for ((pid, address), bp) in list(self.__codeBP.items()) ]
 
     def get_all_page_breakpoints(self):
         """
@@ -3005,7 +3005,7 @@ class _BreakpointContainer (object):
         """
 ##        return list( set( [ (pid, bp) for ((pid, address), bp) in self.__pageBP.items() ] ) )
         result = set()
-        for ((pid, address), bp) in self.__pageBP.items():
+        for ((pid, address), bp) in list(self.__pageBP.items()):
             result.add( (pid, bp) )
         return list(result)
 
@@ -3015,7 +3015,7 @@ class _BreakpointContainer (object):
         @return: All hardware breakpoints as a list of tuples (tid, bp).
         """
         result = list()
-        for (tid, bplist) in self.__hardwareBP.items():
+        for (tid, bplist) in list(self.__hardwareBP.items()):
             for bp in bplist:
                 result.append( (tid, bp) )
         return result
@@ -3071,7 +3071,7 @@ class _BreakpointContainer (object):
         @rtype:  list of L{CodeBreakpoint}
         @return: All code breakpoints for the given process.
         """
-        return [ bp for ((pid, address), bp) in self.__codeBP.items() \
+        return [ bp for ((pid, address), bp) in list(self.__codeBP.items()) \
                 if pid == dwProcessId ]
 
     def get_process_page_breakpoints(self, dwProcessId):
@@ -3082,7 +3082,7 @@ class _BreakpointContainer (object):
         @rtype:  list of L{PageBreakpoint}
         @return: All page breakpoints for the given process.
         """
-        return [ bp for ((pid, address), bp) in self.__pageBP.items() \
+        return [ bp for ((pid, address), bp) in list(self.__pageBP.items()) \
                 if pid == dwProcessId ]
 
     def get_thread_hardware_breakpoints(self, dwThreadId):
@@ -3096,7 +3096,7 @@ class _BreakpointContainer (object):
         @return: All hardware breakpoints for the given thread.
         """
         result = list()
-        for (tid, bplist) in self.__hardwareBP.items():
+        for (tid, bplist) in list(self.__hardwareBP.items()):
             if tid == dwThreadId:
                 for bp in bplist:
                     result.append(bp)
@@ -3827,7 +3827,7 @@ class _BreakpointContainer (object):
         except KeyError:
             return
         aProcess = event.get_process()
-        for (label, (action, oneshot)) in deferred.items():
+        for (label, (action, oneshot)) in list(deferred.items()):
             try:
                 address = aProcess.resolve_label(label)
             except Exception:
@@ -3852,8 +3852,8 @@ class _BreakpointContainer (object):
              - C{True} of the breakpoint is one-shot, C{False} otherwise.
         """
         result = []
-        for pid, deferred in self.__deferredBP.items():
-            for (label, (action, oneshot)) in deferred.items():
+        for pid, deferred in list(self.__deferredBP.items()):
+            for (label, (action, oneshot)) in list(deferred.items()):
                 result.add( (pid, label, action, oneshot) )
         return result
 
@@ -3872,7 +3872,7 @@ class _BreakpointContainer (object):
         """
         return [ (label, action, oneshot)
                   for (label, (action, oneshot))
-                  in self.__deferredBP.get(dwProcessId, {}).items() ]
+                  in list(self.__deferredBP.get(dwProcessId, {}).items()) ]
 
     def stalk_at(self, pid, address, action = None):
         """

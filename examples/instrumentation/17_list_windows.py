@@ -38,4 +38,4 @@ for window in system.get_windows():
     handle  = HexDump.integer( window.get_handle() )
     caption = window.get_text()
     if caption is not None:
-        print "%s:\t%s" % ( handle, caption )
+        print("%s:\t%s" % ( handle, caption ))

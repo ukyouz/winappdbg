@@ -60,11 +60,11 @@ def my_event_handler( event ):
                                 HexDump.address(pc, bits),
                                 pid,
                                 tid )
-    print message
+    print(message)
 
     # If the event is a crash...
     if code == win32.EXCEPTION_DEBUG_EVENT and event.is_last_chance():
-        print "Crash detected, storing crash dump in database..."
+        print("Crash detected, storing crash dump in database...")
 
         # Generate a minimal crash dump.
         crash = Crash( event )

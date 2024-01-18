@@ -45,11 +45,11 @@ table.addRow( "Dalek", "Cyberman" )
 table.justify( 0, 1 )  # column 0 is now right justified
 
 # Let's find out how wide the table is.
-print "Table width: %d" % table.getWidth()
+print("Table width: %d" % table.getWidth())
 
 # Let's find out how many bytes would it be if written to a file.
-print "Text size in characters: %d" % len( table.getOutput() )
+print("Text size in characters: %d" % len( table.getOutput() ))
 
 # Show the table contents on screen.
-print
+print()
 table.show(),

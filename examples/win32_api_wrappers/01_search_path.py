@@ -34,10 +34,10 @@ from winappdbg import win32
 
 try:
     fullpath, basename = win32.SearchPath( None, sys.argv[1], '.dll' )
-except WindowsError, e:
+except WindowsError as e:
     if e.winerror != win32.ERROR_FILE_NOT_FOUND:
         raise
     fullpath, basename = win32.SearchPath( None, sys.argv[1], '.exe' )
 
-print "Full path: %s" % fullpath
-print "Base name: %s" % basename
+print("Full path: %s" % fullpath)
+print("Base name: %s" % basename)

@@ -56,7 +56,7 @@ class MyEventHandler( EventHandler ):
         pc     = thread.get_pc()
         code   = thread.disassemble( pc, 0x10 ) [0]
         bits   = event.get_process().get_bits()
-        print "%s: %s" % ( HexDump.address(code[0], bits), code[2].lower() )
+        print("%s: %s" % ( HexDump.address(code[0], bits), code[2].lower() ))
 
 
 def simple_debugger( argv ):

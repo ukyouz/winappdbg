@@ -45,7 +45,7 @@ def main(argv):
     # print(the banner.)
     print("Service tool")
     print("by Mario Vilas (mvilas at gmail.com)")
-    print
+    print()
 
     # Parse the command line options.
     parser = optparse.OptionParser()
@@ -138,7 +138,7 @@ def show(search = None, wide = True):
     try:
         services = System.get_services()
     except WindowsError as e:
-        print(str(e))
+        print((str(e)))
         return
 
     # Convert the list of services to a list of rows.
@@ -212,19 +212,19 @@ def show(search = None, wide = True):
         need_empty_line = False
         for (name, disp, status, type, pidStr, path) in data:
             if need_empty_line:
-                print
+                print()
             else:
                 need_empty_line = True
-            print("Service name:   %s" % name)
+            print(("Service name:   %s" % name))
             if disp:
-                print("Display name:   %s" % disp)
-            print("Current status: %s" % status)
-            print("Service type:   %s" % type)
+                print(("Display name:   %s" % disp))
+            print(("Current status: %s" % status))
+            print(("Service type:   %s" % type))
             if pidStr:
                 pid = int(pidStr)
-                print("Process ID:     %d (0x%x)" % (pid, pid))
+                print(("Process ID:     %d (0x%x)" % (pid, pid)))
             if path:
-                print("Host filename:  %s" % path)
+                print(("Host filename:  %s" % path))
 
 def copypasta(action, params, wait_state, doing_verb, done_verb):
     'common code in a lot of methods here :)'
@@ -237,7 +237,7 @@ def copypasta(action, params, wait_state, doing_verb, done_verb):
             name = System.get_service_display_name(target)
         except WindowsError:
             name = target
-        print("%s service \"%s\"..." % (doing_verb, name))
+        print(("%s service \"%s\"..." % (doing_verb, name)))
         action(*params)
 
         # Wait for it to finish.
@@ -252,11 +252,11 @@ def copypasta(action, params, wait_state, doing_verb, done_verb):
             status = System.get_service(target)
 
         # Done.
-        print("Service %s successfully." % done_verb)
+        print(("Service %s successfully." % done_verb))
 
     # On error show a message and quit.
     except WindowsError as e:
-        print(str(e))
+        print((str(e)))
         return
 
 def start(target, target_args):

@@ -24,6 +24,6 @@ if(args.sysinfo):
     table.addRow("WinAppDbg", winappdbg.version)
     table.addRow("Process Count", system.get_process_count())
 
-    print table.getOutput()
+    print(table.getOutput())
 
     exit()

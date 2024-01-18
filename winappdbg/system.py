@@ -35,7 +35,7 @@ System settings.
     System
 """
 
-from __future__ import with_statement
+
 
 __all__ = ['System']
 
@@ -434,7 +434,7 @@ class System (_ProcessContainer):
             pBuffer, dwLen = win32.VerQueryValueA(pBlock, "\\")
         else:
             pBlock = win32.GetFileVersionInfoW(filename)
-            pBuffer, dwLen = win32.VerQueryValueW(pBlock, u"\\")
+            pBuffer, dwLen = win32.VerQueryValueW(pBlock, "\\")
         if dwLen != ctypes.sizeof(win32.VS_FIXEDFILEINFO):
             raise ctypes.WinError(win32.ERROR_BAD_LENGTH)
         pVersionInfo = ctypes.cast(
@@ -1000,7 +1000,7 @@ class System (_ProcessContainer):
         except KeyError:
             return []
 
-        return [name for (name, enabled) in key.items() if enabled]
+        return [name for (name, enabled) in list(key.items()) if enabled]
 
     @classmethod
     def set_postmortem_debugger(cls, cmdline,

@@ -33,10 +33,10 @@ from winappdbg import System, Color
 def reg_search( search ):
 
     # Show the user what we're searching for.
-    print "Searching for: %r" % search
+    print("Searching for: %r" % search)
 
     # For each Registry key...
-    for path in System.registry.iterkeys():
+    for path in System.registry.keys():
 
         # Try to open the key. On error skip it.
         try:
@@ -62,7 +62,7 @@ def reg_search( search ):
             highlight( search, path )
 
         # For each Registry value...
-        for name in key.iterkeys():
+        for name in key.keys():
 
             # Try to get the value. On error ignore it.
             try:
@@ -72,7 +72,7 @@ def reg_search( search ):
 
             # Registry values can be of many data types.
             # For this search we need to force all values to be strings.
-            if type(value) not in (str, unicode):
+            if type(value) not in (str, str):
                 value = str(value)
 
             # Do the name or value match?
@@ -102,7 +102,7 @@ def highlight( search, text ):
         finally:
             Color.default()
     else:
-        print text
+        print(text)
 
 # Determine if the output is a console or a file.
 # Trying to use colors fails if the output is not the console.

@@ -57,7 +57,7 @@ def wildcard_search( pid, pattern ):
     for address, data in process.search_hexa( pattern ):
 
         # Print a hex dump for each memory location found.
-        print HexDump.hexblock(data, address = address)
+        print(HexDump.hexblock(data, address = address))
 
 # When invoked from the command line,
 # the first argument is a process ID,

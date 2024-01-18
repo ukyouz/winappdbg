@@ -40,7 +40,7 @@ def show_environment( pid ):
 
     # Print the environment variables.
     for variable, value in sorted( environment.items() ):
-        print "%s=%s" % (variable, value)
+        print("%s=%s" % (variable, value))
 
 # When invoked from the command line,
 # the first argument is a process ID,

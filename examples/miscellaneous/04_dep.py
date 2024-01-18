@@ -88,7 +88,7 @@ for process in system.iter_processes():
             perm = ""
 
     # Skip processes we don't have permission to access.
-    except WindowsError, e:
+    except WindowsError as e:
         if e.winerror == ERROR_ACCESS_DENIED:
             continue
         raise

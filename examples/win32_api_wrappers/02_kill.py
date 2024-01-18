@@ -29,7 +29,7 @@
 # POSSIBILITY OF SUCH DAMAGE.
 
 import sys
-import thread
+import _thread
 
 from winappdbg import win32
 
@@ -39,7 +39,7 @@ def processKiller(dwProcessId):
     win32.DebugActiveProcess( dwProcessId )
 
     # Quit the current thread.
-    thread.exit()
+    _thread.exit()
 
 # When invoked from the command line,
 # take the first argument as a process ID.

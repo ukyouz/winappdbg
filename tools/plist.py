@@ -88,7 +88,7 @@ def main(argv):
     # print(the banner.)
     print("Process enumerator")
     print("by Mario Vilas (mvilas at gmail.com)")
-    print
+    print()
 
     # Parse the command line options.
     (options, argv)  = parse_cmdline(argv)
@@ -184,7 +184,7 @@ def main(argv):
                     srvset.add(descriptor.ServiceName)
                     services[descriptor.ProcessId] = srvset
         except WindowsError as e:
-            print("Error getting the list of services: %s" % str(e))
+            print(("Error getting the list of services: %s" % str(e)))
             return
 
     if options.format == "auto":

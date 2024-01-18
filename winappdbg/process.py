@@ -35,7 +35,7 @@ Process instrumentation.
     Process
 """
 
-from __future__ import with_statement
+
 
 # FIXME
 # I've been told the host process for the latest versions of VMWare
@@ -68,7 +68,7 @@ from os import getenv
 try:
     WindowsError
 except NameError:
-    from win32 import WindowsError, getenv  # NOQA
+    from .win32 import WindowsError, getenv  # NOQA
 
 # delayed import
 System = None
@@ -343,20 +343,20 @@ class Process (_ThreadContainer, _ModuleContainer):
             'x.__iter__() <==> iter(x)'
             return self
 
-        def next(self):
+        def __next__(self):
             'x.next() -> the next value, or raise StopIteration'
             if self.__state == 0:
                 self.__iterator = self.__container.iter_threads()
                 self.__state    = 1
             if self.__state == 1:
                 try:
-                    return self.__iterator.next()
+                    return next(self.__iterator)
                 except StopIteration:
                     self.__iterator = self.__container.iter_modules()
                     self.__state    = 2
             if self.__state == 2:
                 try:
-                    return self.__iterator.next()
+                    return next(self.__iterator)
                 except StopIteration:
                     self.__iterator = None
                     self.__state    = 3
@@ -1174,25 +1174,25 @@ class Process (_ThreadContainer, _ModuleContainer):
 
         # Skip until the first Unicode null char is found.
         pos = 0
-        while buffer[pos] != u'\0':
+        while buffer[pos] != '\0':
             pos += 1
         pos += 1
 
         # Loop for each environment variable...
         environment = []
-        while buffer[pos] != u'\0':
+        while buffer[pos] != '\0':
 
             # Until we find a null char...
             env_name_pos = pos
-            env_name = u''
+            env_name = ''
             found_name = False
-            while buffer[pos] != u'\0':
+            while buffer[pos] != '\0':
 
                 # Get the current char.
                 char = buffer[pos]
 
                 # Is it an equal sign?
-                if char == u'=':
+                if char == '=':
 
                     # Skip leading equal signs.
                     if env_name_pos == pos:
@@ -1216,8 +1216,8 @@ class Process (_ThreadContainer, _ModuleContainer):
                 break
 
             # Read the variable value until we find a null char.
-            env_value = u''
-            while buffer[pos] != u'\0':
+            env_value = ''
+            while buffer[pos] != '\0':
                 env_value += buffer[pos]
                 pos += 1
 
@@ -1261,7 +1261,7 @@ class Process (_ThreadContainer, _ModuleContainer):
             DeprecationWarning)
 
         # Get the environment variables.
-        block = [ key + u'=' + value for (key, value) \
+        block = [ key + '=' + value for (key, value) \
                                      in self.get_environment_variables() ]
 
 
@@ -1310,8 +1310,8 @@ class Process (_ThreadContainer, _ModuleContainer):
             equals = '='
             terminator = '\0'
         else:
-            equals = u'='
-            terminator = u'\0'
+            equals = '='
+            terminator = '\0'
 
         # Split the blocks into key/value pairs.
         for chunk in block:
@@ -1368,7 +1368,7 @@ class Process (_ThreadContainer, _ModuleContainer):
         environment = dict()
         for key, value in variables:
             if key in environment:
-                environment[key] = environment[key] + u'\0' + value
+                environment[key] = environment[key] + '\0' + value
             else:
                 environment[key] = value
 
@@ -1405,7 +1405,7 @@ class Process (_ThreadContainer, _ModuleContainer):
                 return Search.search_process(
                     self, [pattern], minAddr, maxAddr)
             return self.search_bytes(pattern, minAddr, maxAddr)
-        if isinstance(pattern, unicode):
+        if isinstance(pattern, str):
             return self.search_bytes(
                 pattern.encode("utf-16le"), minAddr, maxAddr)
         if isinstance(pattern, Pattern):
@@ -2402,7 +2402,7 @@ class Process (_ThreadContainer, _ModuleContainer):
         # Validate the parameters.
         if not lpBaseAddress or dwMaxSize == 0:
             if fUnicode:
-                return u''
+                return ''
             return ''
         if not dwMaxSize:
             dwMaxSize = 0x1000
@@ -2424,7 +2424,7 @@ class Process (_ThreadContainer, _ModuleContainer):
 ##                szString = u''.join(szString)
 
             # Truncate the string when the first null char is found.
-            szString = szString[ : szString.find(u'\0') ]
+            szString = szString[ : szString.find('\0') ]
 
         # If the string is ANSI...
         else:
@@ -3749,7 +3749,7 @@ class Process (_ThreadContainer, _ModuleContainer):
         else:
 
             # Resolve kernel32.dll!LoadLibrary (A/W)
-            if type(dllname) == type(u''):
+            if type(dllname) == type(''):
                 pllibname = 'LoadLibraryW'
                 bufferlen = (len(dllname) + 1) * 2
                 dllname = win32.ctypes.create_unicode_buffer(dllname).raw[:bufferlen + 1]
@@ -3970,7 +3970,7 @@ class _ProcessContainer (object):
         @return: Iterator of global process IDs in this snapshot.
         """
         self.__initialize_snapshot()
-        return self.__processDict.keys()
+        return list(self.__processDict.keys())
 
     def iter_processes(self):
         """
@@ -3979,7 +3979,7 @@ class _ProcessContainer (object):
         @return: Iterator of L{Process} objects in this snapshot.
         """
         self.__initialize_snapshot()
-        return self.__processDict.values()
+        return list(self.__processDict.values())
 
     def get_process_ids(self):
         """
@@ -3988,7 +3988,7 @@ class _ProcessContainer (object):
         @return: List of global process IDs in this snapshot.
         """
         self.__initialize_snapshot()
-        return self.__processDict.keys()
+        return list(self.__processDict.keys())
 
     def get_process_count(self):
         """
@@ -4202,7 +4202,7 @@ class _ProcessContainer (object):
         iTrustLevel         = kwargs.pop('iTrustLevel', 2)
         bAllowElevation     = kwargs.pop('bAllowElevation', True)
         if kwargs:
-            raise TypeError("Unknown keyword arguments: %s" % kwargs.keys())
+            raise TypeError("Unknown keyword arguments: %s" % list(kwargs.keys()))
         if not lpCmdLine:
             raise ValueError("Missing command line to execute!")
 
@@ -4449,7 +4449,7 @@ class _ProcessContainer (object):
                 self.scan_processes_fast()
 
                 # Now try using the Toolhelp again to get the threads.
-                for aProcess in self.__processDict.values():
+                for aProcess in list(self.__processDict.values()):
                     if aProcess._get_thread_ids():
                         try:
                             aProcess.scan_threads()
@@ -4543,7 +4543,7 @@ class _ProcessContainer (object):
             self._del_process(pid)
 
         # Remove dead threads
-        for aProcess in self.__processDict.values():
+        for aProcess in list(self.__processDict.values()):
             dead_tids = set( aProcess._get_thread_ids() )
             dead_tids.difference_update(found_tids)
             for tid in dead_tids:
@@ -4566,7 +4566,7 @@ class _ProcessContainer (object):
             snapshot is complete for all processes the debugger has access to.
         """
         complete = True
-        for aProcess in self.__processDict.values():
+        for aProcess in list(self.__processDict.values()):
             try:
                 aProcess.scan_modules()
             except WindowsError:
@@ -4709,7 +4709,7 @@ class _ProcessContainer (object):
             instead of just a filename.
         """
         complete = True
-        for aProcess in self.__processDict.values():
+        for aProcess in list(self.__processDict.values()):
             try:
                 new_name = None
                 old_name = aProcess.fileName

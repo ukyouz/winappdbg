@@ -53,13 +53,13 @@ def print_state( process_name ):
             context = thread.get_context()
 
             # Display the thread state.
-            print
-            print "-" * 79
-            print "Thread: %s" % HexDump.integer( tid )
-            print
-            print CrashDump.dump_registers( context )
-            print CrashDump.dump_code( code, eip ),
-            print "-" * 79
+            print()
+            print("-" * 79)
+            print("Thread: %s" % HexDump.integer( tid ))
+            print()
+            print(CrashDump.dump_registers( context ))
+            print(CrashDump.dump_code( code, eip ), end=' ')
+            print("-" * 79)
 
     # Resume the process execution.
     finally:

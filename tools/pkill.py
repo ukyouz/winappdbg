@@ -51,13 +51,13 @@ def main(argv):
 
     print("Process killer")
     print("by Mario Vilas (mvilas at gmail.com)")
-    print
+    print()
 
     if len(params) == 0 or '-h' in params or '--help' in params or \
                                                      '/?' in params:
         print("Usage:")
-        print("    %s <process ID or name> [process ID or name...]" % script)
-        print
+        print(("    %s <process ID or name> [process ID or name...]" % script))
+        print()
         print("If a process name is given instead of an ID all matching processes are killed.")
         exit()
 
@@ -80,13 +80,13 @@ def main(argv):
         if pid is None:
             matched = s.find_processes_by_filename(token)
             if not matched:
-                print("Error: process not found: %s" % token)
+                print(("Error: process not found: %s" % token))
                 exit()
             for (process, name) in matched:
                 targets.add(process.get_pid())
         else:
             if not s.has_process(pid):
-                print("Error: process not found: 0x%x (%d)" % (pid, pid))
+                print(("Error: process not found: 0x%x (%d)" % (pid, pid)))
                 exit()
             targets.add(pid)
     targets = list(targets)
@@ -106,15 +106,15 @@ def main(argv):
                 process.kill(-1)
                 next_targets.pop()
                 count += 1
-                print("Terminated process %d" % pid)
+                print(("Terminated process %d" % pid))
                 try:
                     process.close_handle()
                 except WindowsError as e:
-                    print("Warning: call to CloseHandle() failed: %s" % str(e))
+                    print(("Warning: call to CloseHandle() failed: %s" % str(e)))
             except WindowsError as e:
-                print("Warning: call to TerminateProcess() failed: %s" % str(e))
+                print(("Warning: call to TerminateProcess() failed: %s" % str(e)))
         except WindowsError as e:
-            print("Warning: call to OpenProcess() failed: %s" % str(e))
+            print(("Warning: call to OpenProcess() failed: %s" % str(e)))
     targets = next_targets
 
     # Try to terminate processes by injecting a call to ExitProcess().
@@ -131,13 +131,13 @@ def main(argv):
                     process.start_thread(pExitProcess, -1)
                     next_targets.pop()
                     count += 1
-                    print("Forced process %d exit" % pid)
+                    print(("Forced process %d exit" % pid))
                 except WindowsError as e:
-                    print("Warning: call to CreateRemoteThread() failed %d: %s" % (pid, str(e)))
+                    print(("Warning: call to CreateRemoteThread() failed %d: %s" % (pid, str(e))))
             except WindowsError as e:
-                print("Warning: resolving address of ExitProcess() failed %d: %s" % (pid, str(e)))
+                print(("Warning: resolving address of ExitProcess() failed %d: %s" % (pid, str(e))))
         except WindowsError as e:
-            print("Warning: scanning for loaded modules failed %d: %s" % (pid, str(e)))
+            print(("Warning: scanning for loaded modules failed %d: %s" % (pid, str(e))))
     targets = next_targets
 
     # Attach to every process.
@@ -147,10 +147,10 @@ def main(argv):
         try:
             win32.DebugActiveProcess(pid)
             count += 1
-            print("Attached to process %d" % pid)
+            print(("Attached to process %d" % pid))
         except WindowsError as e:
             next_targets.append(pid)
-            print("Warning: error attaching to %d: %s" % (pid, str(e)))
+            print(("Warning: error attaching to %d: %s" % (pid, str(e))))
     targets = next_targets
 
     # Try to call the DebugSetProcessKillOnExit() API.
@@ -168,14 +168,14 @@ def main(argv):
     except AttributeError:
         pass
     except WindowsError as e:
-        print("Warning: call to DebugSetProcessKillOnExit() failed: %s" % str(e))
+        print(("Warning: call to DebugSetProcessKillOnExit() failed: %s" % str(e)))
 
     if count == 0:
         print("Failed! No process was killed.")
     elif count == 1:
         print("Successfully killed 1 process.")
     else:
-        print("Successfully killed %d processes." % count)
+        print(("Successfully killed %d processes." % count))
 
     # Exit the current thread.
     # This will kill all the processes we have attached to.

@@ -35,7 +35,7 @@ Thread instrumentation.
     Thread
 """
 
-from __future__ import with_statement
+
 
 __all__ = ['Thread']
 
@@ -50,7 +50,7 @@ import warnings
 try:
     WindowsError
 except NameError:
-    from win32 import WindowsError
+    from .win32 import WindowsError
 
 # delayed imports
 Process = None
@@ -980,7 +980,7 @@ class Thread (object):
 
         if isinstance(segment, str):
             selector = self.get_register(segment)
-        elif isinstance(segment, (int, long)):
+        elif isinstance(segment, int):
             segment = int(segment)
 
             if segment < 0 or segment > 0xFFFFFFFF:
@@ -1580,7 +1580,7 @@ class Thread (object):
                                        win32.CONTEXT_INTEGER)
         aProcess    = self.get_process()
         data        = dict()
-        for (reg_name, reg_value) in context.items():
+        for (reg_name, reg_value) in list(context.items()):
             if reg_name not in peekable_registers:
                 continue
 ##            if reg_name == 'Ebp':
@@ -1833,7 +1833,7 @@ class _ThreadContainer (object):
         @return: Iterator of global thread IDs in this snapshot.
         """
         self.__initialize_snapshot()
-        return self.__threadDict.keys()
+        return list(self.__threadDict.keys())
 
     def iter_threads(self):
         """
@@ -1842,7 +1842,7 @@ class _ThreadContainer (object):
         @return: Iterator of L{Thread} objects in this snapshot.
         """
         self.__initialize_snapshot()
-        return self.__threadDict.values()
+        return list(self.__threadDict.values())
 
     def get_thread_ids(self):
         """
@@ -1850,7 +1850,7 @@ class _ThreadContainer (object):
         @return: List of global thread IDs in this snapshot.
         """
         self.__initialize_snapshot()
-        return self.__threadDict.keys()
+        return list(self.__threadDict.keys())
 
     def get_thread_count(self):
         """
@@ -2007,7 +2007,7 @@ class _ThreadContainer (object):
         """
         Clears the threads snapshot.
         """
-        for aThread in self.__threadDict.values():
+        for aThread in list(self.__threadDict.values()):
             aThread.clear()
         self.__threadDict = dict()
 

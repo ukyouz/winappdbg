@@ -44,7 +44,7 @@ def memory_search( pid, bytes ):
     for address in process.search_bytes( bytes ):
 
         # Print the memory address where it was found.
-        print HexDump.address( address )
+        print(HexDump.address( address ))
 
 # When invoked from the command line,
 # the first argument is a process ID,

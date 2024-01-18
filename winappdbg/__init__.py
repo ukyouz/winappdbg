@@ -252,7 +252,7 @@ try:
     import warnings
     with warnings.catch_warnings():
         warnings.simplefilter("ignore")
-        from sql import *
+        from .sql import *
     __all__.append('CrashDAO')
 except ImportError:
     import warnings

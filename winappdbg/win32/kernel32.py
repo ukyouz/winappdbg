@@ -606,7 +606,7 @@ class Handle (object):
         self._value     = self._normalize(aHandle)
         self.bOwnership = bOwnership
         if Handle.__bLeakDetection:     # XXX DEBUG
-            print("INIT HANDLE (%r) %r" % (self.value, self))
+            print(("INIT HANDLE (%r) %r" % (self.value, self)))
 
     @property
     def value(self):
@@ -618,7 +618,7 @@ class Handle (object):
         """
         try:
             if Handle.__bLeakDetection:     # XXX DEBUG
-                print("DEL HANDLE %r" % self)
+                print(("DEL HANDLE %r" % self))
             self.close()
         except Exception:
             pass
@@ -628,7 +628,7 @@ class Handle (object):
         Compatibility with the "C{with}" Python statement.
         """
         if Handle.__bLeakDetection:     # XXX DEBUG
-            print("ENTER HANDLE %r" % self)
+            print(("ENTER HANDLE %r" % self))
         return self
 
     def __exit__(self, type, value, traceback):
@@ -636,7 +636,7 @@ class Handle (object):
         Compatibility with the "C{with}" Python statement.
         """
         if Handle.__bLeakDetection:     # XXX DEBUG
-            print("EXIT HANDLE %r" % self)
+            print(("EXIT HANDLE %r" % self))
         try:
             self.close()
         except Exception:
@@ -685,7 +685,7 @@ class Handle (object):
         """
         if self.bOwnership and self.value not in (None, INVALID_HANDLE_VALUE):
             if Handle.__bLeakDetection:     # XXX DEBUG
-                print("CLOSE HANDLE (%d) %r" % (self.value, self))
+                print(("CLOSE HANDLE (%d) %r" % (self.value, self)))
             try:
                 self._close()
             finally:
@@ -707,8 +707,8 @@ class Handle (object):
             raise ValueError("Closed handles can't be duplicated!")
         new_handle = DuplicateHandle(self.value)
         if Handle.__bLeakDetection:     # XXX DEBUG
-            print("DUP HANDLE (%d -> %d) %r %r" % \
-                            (self.value, new_handle.value, self, new_handle))
+            print(("DUP HANDLE (%d -> %d) %r %r" % \
+                            (self.value, new_handle.value, self, new_handle)))
         return new_handle
 
     @staticmethod
@@ -2465,7 +2465,7 @@ def GetDllDirectoryW():
     nBufferLength = _GetDllDirectoryW(0, None)
     if nBufferLength == 0:
         return None
-    lpBuffer = ctypes.create_unicode_buffer(u"", nBufferLength)
+    lpBuffer = ctypes.create_unicode_buffer("", nBufferLength)
     _GetDllDirectoryW(nBufferLength, byref(lpBuffer))
     return lpBuffer.value
 
@@ -2726,14 +2726,14 @@ def GetLogicalDriveStringsW():
     _GetLogicalDriveStringsW.errcheck = RaiseIfZero
 
     nBufferLength = (4 * 26) + 1    # "X:\\\0" from A to Z plus empty string
-    lpBuffer = ctypes.create_unicode_buffer(u'', nBufferLength)
+    lpBuffer = ctypes.create_unicode_buffer('', nBufferLength)
     _GetLogicalDriveStringsW(nBufferLength, lpBuffer)
     drive_strings = list()
     string_p = addressof(lpBuffer)
     sizeof_wchar = sizeof(ctypes.c_wchar)
     while True:
         string_v = ctypes.wstring_at(string_p)
-        if string_v == u'':
+        if string_v == '':
             break
         drive_strings.append(string_v)
         string_p += (len(string_v) * sizeof_wchar) + sizeof_wchar
@@ -2816,7 +2816,7 @@ def QueryDosDeviceW(lpDeviceName):
     if not lpDeviceName:
         lpDeviceName = None
     ucchMax = 0x1000
-    lpTargetPath = ctypes.create_unicode_buffer(u'', ucchMax)
+    lpTargetPath = ctypes.create_unicode_buffer('', ucchMax)
     _QueryDosDeviceW(lpDeviceName, lpTargetPath, ucchMax)
     return lpTargetPath.value
 
@@ -3008,12 +3008,12 @@ def SearchPathW(lpPath, lpFileName, lpExtension):
     if not lpExtension:
         lpExtension = None
     nBufferLength = _SearchPathW(lpPath, lpFileName, lpExtension, 0, None, None)
-    lpBuffer = ctypes.create_unicode_buffer(u'', nBufferLength + 1)
+    lpBuffer = ctypes.create_unicode_buffer('', nBufferLength + 1)
     lpFilePart = LPWSTR()
     _SearchPathW(lpPath, lpFileName, lpExtension, nBufferLength, lpBuffer, byref(lpFilePart))
     lpFilePart = lpFilePart.value
     lpBuffer = lpBuffer.value
-    if lpBuffer == u'':
+    if lpBuffer == '':
         if GetLastError() == ERROR_SUCCESS:
             raise ctypes.WinError(ERROR_FILE_NOT_FOUND)
         raise ctypes.WinError()
@@ -3115,7 +3115,7 @@ def GetFinalPathNameByHandleW(hFile, dwFlags = FILE_NAME_NORMALIZED | VOLUME_NAM
     cchFilePath = _GetFinalPathNameByHandleW(hFile, None, 0, dwFlags)
     if cchFilePath == 0:
         raise ctypes.WinError()
-    lpszFilePath = ctypes.create_unicode_buffer(u'', cchFilePath + 1)
+    lpszFilePath = ctypes.create_unicode_buffer('', cchFilePath + 1)
     nCopied = _GetFinalPathNameByHandleW(hFile, lpszFilePath, cchFilePath, dwFlags)
     if nCopied <= 0 or nCopied > cchFilePath:
         raise ctypes.WinError()
@@ -3149,7 +3149,7 @@ def GetTempPathW():
     nBufferLength = _GetTempPathW(0, None)
     if nBufferLength <= 0:
         raise ctypes.WinError()
-    lpBuffer = ctypes.create_unicode_buffer(u'', nBufferLength)
+    lpBuffer = ctypes.create_unicode_buffer('', nBufferLength)
     nCopied = _GetTempPathW(nBufferLength, lpBuffer)
     if nCopied > nBufferLength or nCopied == 0:
         raise ctypes.WinError()
@@ -3176,14 +3176,14 @@ def GetTempFileNameA(lpPathName = None, lpPrefixString = "TMP", uUnique = 0):
         raise ctypes.WinError()
     return lpTempFileName.value, uUnique
 
-def GetTempFileNameW(lpPathName = None, lpPrefixString = u"TMP", uUnique = 0):
+def GetTempFileNameW(lpPathName = None, lpPrefixString = "TMP", uUnique = 0):
     _GetTempFileNameW = windll.kernel32.GetTempFileNameW
     _GetTempFileNameW.argtypes = [LPWSTR, LPWSTR, UINT, LPWSTR]
     _GetTempFileNameW.restype  = UINT
 
     if lpPathName is None:
         lpPathName = GetTempPathW()
-    lpTempFileName = ctypes.create_unicode_buffer(u'', MAX_PATH)
+    lpTempFileName = ctypes.create_unicode_buffer('', MAX_PATH)
     uUnique = _GetTempFileNameW(lpPathName, lpPrefixString, uUnique, lpTempFileName)
     if uUnique == 0:
         raise ctypes.WinError()
@@ -3217,7 +3217,7 @@ def GetCurrentDirectoryW():
     nBufferLength = _GetCurrentDirectoryW(0, None)
     if nBufferLength <= 0:
         raise ctypes.WinError()
-    lpBuffer = ctypes.create_unicode_buffer(u'', nBufferLength)
+    lpBuffer = ctypes.create_unicode_buffer('', nBufferLength)
     nCopied = _GetCurrentDirectoryW(nBufferLength, lpBuffer)
     if nCopied > nBufferLength or nCopied == 0:
         raise ctypes.WinError()
@@ -3251,7 +3251,7 @@ def GetSystemDirectoryW():
     nBufferLength = _GetSystemDirectoryW(0, None)
     if nBufferLength <= 0:
         raise ctypes.WinError()
-    lpBuffer = ctypes.create_unicode_buffer(u'', nBufferLength)
+    lpBuffer = ctypes.create_unicode_buffer('', nBufferLength)
     nCopied = _GetSystemDirectoryW(nBufferLength, lpBuffer)
     if nCopied > nBufferLength or nCopied == 0:
         raise ctypes.WinError()
@@ -4639,7 +4639,7 @@ def GlobalGetAtomNameW(nAtom):
 
     nSize = 64
     while 1:
-        lpBuffer = ctypes.create_unicode_buffer(u"", nSize)
+        lpBuffer = ctypes.create_unicode_buffer("", nSize)
         nCopied  = _GlobalGetAtomNameW(nAtom, lpBuffer, nSize)
         if nCopied < nSize - 1:
             break

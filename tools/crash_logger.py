@@ -29,7 +29,7 @@
 # ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 # POSSIBILITY OF SUCH DAMAGE.
 
-from __future__ import with_statement
+
 
 __all__ =   [
                 'LoggingEventHandler',
@@ -184,7 +184,7 @@ class LoggingEventHandler(EventHandler):
 
         # Pause if requested.
         if self.options.pause:
-            raw_input("Press enter to continue...")
+            input("Press enter to continue...")
 
         try:
 
@@ -806,9 +806,9 @@ class CrashLogger (object):
 
                     # Warn about duplicated options
                     if key in opt_history:
-                        print("Warning: duplicated option %s in line %d" \
-                              " of config file %s" % (key, number, config))
-                        print
+                        print(("Warning: duplicated option %s in line %d" \
+                              " of config file %s" % (key, number, config)))
+                        print()
                     else:
                         opt_history.add(key)
 
@@ -963,14 +963,14 @@ class CrashLogger (object):
             if options.memory and options.memory > 1:
                 print("Warning: using options 'dbm' and 'memory' in combination can have a severe")
                 print("  performance penalty.")
-                print
+                print()
             if options.duplicates:
                 if options.verbose:
                     print("Warning: inconsistent use of 'duplicates'")
                     print("  DBM databases do not allow duplicate entries with the same key.")
                     print("  This means that when the same crash is found more than once it will be logged")
                     print("  to standard output each time, but will only be saved once into the database.")
-                    print
+                    print()
                 else:
                     msg  = "inconsistent use of 'duplicates': "
                     msg += "DBM databases do not allow duplicate entries with the same key"
@@ -980,20 +980,20 @@ class CrashLogger (object):
         if options.time_limit and options.autodetach \
                                     and (options.windowed or options.console):
             count = len(options.windowed) + len(options.console)
-            print
+            print()
             print("Warning: inconsistent use of 'time_limit'")
             if count == 1:
                 print("  An execution time limit was set, but the launched process won't be killed.")
             else:
-                print("  An execution time limit was set, but %d launched processes won't be killed." % count)
+                print(("  An execution time limit was set, but %d launched processes won't be killed." % count))
             print("  Set 'autodetach' to false to make sure debugees are killed on exit.")
             print("  Alternatively use 'attach' instead of launching new processes.")
-            print
+            print()
 
         # Warn about inconsistent use of pause and interactive
         if options.pause and options.interactive:
             print("Warning: the 'pause' option is ignored when 'interactive' is set.")
-            print
+            print()
 
     def _parse_list(self, value):
         tokens = set()
@@ -1016,8 +1016,8 @@ class CrashLogger (object):
         # Show the banner
         print("WinAppDbg crash logger")
         print("by Mario Vilas (mvilas at gmail.com)")
-        print(winappdbg.version)
-        print
+        print((winappdbg.version))
+        print()
 
         # TODO: use optparse for this!
         # TODO: move crash_report.py here
@@ -1060,7 +1060,7 @@ class CrashLogger (object):
 
         # Catch errors and show them on screen
         except Exception as e:
-            print("Runtime error: %s" % str(e))
+            print(("Runtime error: %s" % str(e)))
             traceback.print_exc()
             return
 
@@ -1087,7 +1087,7 @@ class CrashLogger (object):
         # TODO check if it's us already
         # TODO maybe keep a backup?
         previous = System.get_postmortem_debugger()
-        print("Previous JIT debugger was: %s" % previous)
+        print(("Previous JIT debugger was: %s" % previous))
 
         # Install as JIT debugger
         System.set_postmortem_debugger(cmdline)
@@ -1102,8 +1102,8 @@ class CrashLogger (object):
     def show_help_banner(self):
         script = ntpath.split(__file__)[1]
         print("Usage:")
-        print("\t%s <configuration file>" % script)
-        print
+        print(("\t%s <configuration file>" % script))
+        print()
         print("See example.cfg for details on the config file format.")
 
     # Run the crash logger
@@ -1187,7 +1187,7 @@ class CrashLogger (object):
             name = System.get_service_display_name(service)
         except WindowsError:
             name = service
-        print("Starting service \"%s\"..." % name)
+        print(("Starting service \"%s\"..." % name))
         # TODO: maybe add support for starting services with arguments?
         System.start_service(service)
 

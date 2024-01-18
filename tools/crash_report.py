@@ -67,7 +67,7 @@ def filter_duplicates(old_list):
         if filename not in new_list:
             new_list.append(filename)
         else:
-            print("Skipping duplicate file: %s" % filename)
+            print(("Skipping duplicate file: %s" % filename))
     return new_list
 
 def filter_inexistent_files(old_list):
@@ -76,14 +76,14 @@ def filter_inexistent_files(old_list):
         if os.path.exists(filename):
             new_list.append(filename)
         else:
-            print("Cannot find file: %s" % filename)
+            print(("Cannot find file: %s" % filename))
     return new_list
 
 def open_database(filename):
     cc = None
 
     # Parse the configuration file to get the database URI.
-    print("Opening configuration file: %s" % filename)
+    print(("Opening configuration file: %s" % filename))
     cl = CrashLogger()
     options = cl.read_config_file(filename)
 
@@ -94,13 +94,13 @@ def open_database(filename):
             return
         elif options.database.startswith('dbm://'):
             dbfile = options.database[6:]
-            print("Connecting to DBM database file: %s" % dbfile)
+            print(("Connecting to DBM database file: %s" % dbfile))
             cc = CrashContainer(dbfile)
         else:
-            print("Connecting to database: %s" % options.database)
+            print(("Connecting to database: %s" % options.database))
             cc = CrashDictionary(options.database)
     except Exception as e:
-        print("Error connecting to the database: %s" % e)
+        print(("Error connecting to the database: %s" % e))
         return
 
     # Return the crash container.
@@ -112,8 +112,8 @@ def print_report_for_database(cc, options):
         if not count:
             print("No crashes to report.")
         else:
-            print("Found %d crashes:" % count)
-            print('-' * 79)
+            print(("Found %d crashes:" % count))
+            print(('-' * 79))
             print_crash_report(cc, options)
 
 def print_crash_report(cc, options):
@@ -130,15 +130,15 @@ def print_crash_report(cc, options):
             report = c.fullReport()
         else:
             report = c.briefReport() + '\n'
-        if isinstance(report, unicode):
+        if isinstance(report, str):
             report = report.encode('UTF8')          # XXX HORRIBLE HACK!
-        print(report,)
-        print('-' * 79)
+        print((report,))
+        print(('-' * 79))
 
 def main(argv):
     print("Crash logger report")
     print("by Mario Vilas (mvilas at gmail.com)")
-    print
+    print()
 
     (options, parameters) = parse_cmdline(argv)
 

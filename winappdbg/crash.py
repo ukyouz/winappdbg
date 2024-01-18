@@ -100,7 +100,7 @@ except ImportError:
 
     # Faster implementation of the pickle module as a C extension.
     try:
-        import cPickle as pickle
+        import pickle as pickle
 
     # If all fails fallback to the classic pickle module.
     except ImportError:
@@ -1048,7 +1048,7 @@ class Crash (object):
         """
         msg = ''
         if self.environment:
-            for key, value in self.environment.items():
+            for key, value in list(self.environment.items()):
                 msg += '  %s=%s\n' % (key, value)
         return msg
 
@@ -1198,10 +1198,10 @@ class CrashContainer (object):
         if filename:
             global anydbm
             if not anydbm:
-                import anydbm
-            self.__db = anydbm.open(filename, 'c')
+                import dbm
+            self.__db = dbm.open(filename, 'c')
             self.__keys = dict([ (self.unmarshall_key(mk), mk)
-                                                  for mk in self.__db.keys() ])
+                                                  for mk in list(self.__db.keys()) ])
         else:
             self.__db = dict()
             self.__keys = dict()
@@ -1346,7 +1346,7 @@ class CrashContainer (object):
         @return:
             C{True} if a Crash object with the same key is in the container.
         """
-        return self.has_key( crash.key() )  # NOQA
+        return crash.key() in self  # NOQA
 
     def has_key(self, key):
         """
@@ -1363,7 +1363,7 @@ class CrashContainer (object):
         @rtype:  iterator
         @return: Iterator of known L{Crash} keys.
         """
-        return self.__keys.keys()
+        return list(self.__keys.keys())
 
     class __CrashContainerIterator (object):
         """
@@ -1383,15 +1383,15 @@ class CrashContainer (object):
             # TODO: lock the database when iterating it.
             #
             self.__container = container
-            self.__keys_iter = container.keys()
+            self.__keys_iter = list(container.keys())
 
-        def next(self):
+        def __next__(self):
             """
             @rtype:  L{Crash}
             @return: A B{copy} of a Crash object in the L{CrashContainer}.
             @raise StopIteration: No more items left.
             """
-            key  = self.__keys_iter.next()
+            key  = next(self.__keys_iter)
             return self.__container.get(key)
 
     def __del__(self):
@@ -1408,7 +1408,7 @@ class CrashContainer (object):
         @rtype:  iterator
         @return: Iterator of the contained L{Crash} objects.
         """
-        return self.values()
+        return list(self.values())
 
     def itervalues(self):
         """
@@ -1544,7 +1544,7 @@ class CrashDictionary(object):
         if sql is None:
             with warnings.catch_warnings():
                 warnings.simplefilter("ignore")
-                import sql
+                from . import sql
 
         # Initialize the private members of the class.
         self._allowRepeatedKeys = allowRepeatedKeys
@@ -1714,8 +1714,8 @@ class CrashTableMSSQL (CrashDictionary):
         warnings.warn(
             "The %s class is deprecated since WinAppDbg 1.5." % self.__class__,
             DeprecationWarning)
-        import urllib
-        url = "mssql+pyodbc:///?odbc_connect=" + urllib.quote_plus(location)
+        import urllib.request, urllib.parse, urllib.error
+        url = "mssql+pyodbc:///?odbc_connect=" + urllib.parse.quote_plus(location)
         super(CrashTableMSSQL, self).__init__(url, allowRepeatedKeys)
 
 class VolatileCrashContainer (CrashTable):
@@ -1822,7 +1822,7 @@ class DummyCrashContainer(object):
         @rtype:  bool
         @return: C{True} if a matching L{Crash} object is in the container.
         """
-        return self.__keys.has_key( key )  # NOQA
+        return key in self.__keys  # NOQA
 
     def iterkeys(self):
         """

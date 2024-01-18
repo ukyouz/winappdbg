@@ -36,13 +36,13 @@ import warnings
 
 def test(title, fn):
     title = "Testing %s... " % title
-    print title,
+    print(title, end=' ')
     try:
         fn()
-        print "\tOK"
+        print("\tOK")
         return True
-    except Exception, e:
-        print "\tFAIL: %s" % str(e)
+    except Exception as e:
+        print("\tFAIL: %s" % str(e))
         return False
 
 def test_module_load():

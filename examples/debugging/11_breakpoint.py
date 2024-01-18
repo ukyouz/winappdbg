@@ -48,7 +48,7 @@ def action_callback( event ):
 
     # Show a message to the user.
     message = "kernel32!CreateFileW called from %s by thread %d at process %d"
-    print message % ( HexDump.address(address, process.get_bits()), tid, pid )
+    print(message % ( HexDump.address(address, process.get_bits()), tid, pid ))
 
 
 class MyEventHandler( EventHandler ):

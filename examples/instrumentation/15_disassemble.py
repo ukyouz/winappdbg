@@ -58,8 +58,8 @@ def print_thread_disassembly( tid ):
         thread.resume()
 
     # Display the disassembled code.
-    print
-    print CrashDump.dump_code( code, eip ),
+    print()
+    print(CrashDump.dump_code( code, eip ), end=' ')
 
 # When invoked from the command line,
 # the first argument is a thread ID

@@ -38,7 +38,7 @@ Module instrumentation.
     DebugSymbolsWarning
 """
 
-from __future__ import with_statement
+
 
 __all__ = ['Module', 'DebugSymbolsWarning']
 
@@ -56,7 +56,7 @@ import traceback
 try:
     WindowsError
 except NameError:
-    from win32 import WindowsError
+    from .win32 import WindowsError
 
 #==============================================================================
 
@@ -493,7 +493,7 @@ class Module (object):
                 except WindowsError:
                     success = 0
                 if not success:
-                    ImageName = self.get_filename()
+                    ImageName = self.get_filename().encode()
                     success = win32.SymLoadModule64(
                         hProcess, None, ImageName, None, BaseOfDll, SizeOfDll)
                 if success:
@@ -919,7 +919,7 @@ class _ModuleContainer (object):
         @return: Iterator of DLL base addresses in this snapshot.
         """
         self.__initialize_snapshot()
-        return self.__moduleDict.keys()
+        return list(self.__moduleDict.keys())
 
     def iter_modules(self):
         """
@@ -928,7 +928,7 @@ class _ModuleContainer (object):
         @return: Iterator of L{Module} objects in this snapshot.
         """
         self.__initialize_snapshot()
-        return self.__moduleDict.values()
+        return list(self.__moduleDict.values())
 
     def get_module_bases(self):
         """
@@ -937,7 +937,7 @@ class _ModuleContainer (object):
         @return: List of DLL base addresses in this snapshot.
         """
         self.__initialize_snapshot()
-        return self.__moduleDict.keys()
+        return list(self.__moduleDict.keys())
 
     def get_module_count(self):
         """
@@ -1086,7 +1086,7 @@ class _ModuleContainer (object):
                         aModule.process     = self
                 me = win32.Module32Next(hSnapshot)
 ##        for base in self.get_module_bases(): # XXX triggers a scan
-        for base in self.__moduleDict.keys():
+        for base in list(self.__moduleDict.keys()):
             if base not in found_bases:
                 self._del_module(base)
 
@@ -1094,7 +1094,7 @@ class _ModuleContainer (object):
         """
         Clears the modules snapshot.
         """
-        for aModule in self.__moduleDict.values():
+        for aModule in list(self.__moduleDict.values()):
             aModule.clear()
         self.__moduleDict = dict()
 

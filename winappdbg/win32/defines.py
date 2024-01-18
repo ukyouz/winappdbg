@@ -135,10 +135,10 @@ if WIN32_VERBOSE_MODE:
             self.__copy_attribute('argtypes')
             self.__copy_attribute('restype')
             self.__copy_attribute('errcheck')
-            print("-"*10)
-            print("%s ! %s %r" % (self.__dllname, self.__funcname, argv))
+            print(("-"*10))
+            print(("%s ! %s %r" % (self.__dllname, self.__funcname, argv)))
             retval = self.__func(*argv)
-            print("== %r" % (retval,))
+            print(("== %r" % (retval,)))
             return retval
 
     windll = WinDllHook()
@@ -207,7 +207,7 @@ class GuessStringType(object):
 
     # ANSI and Unicode types
     t_ansi    = type('')
-    t_unicode = type(u'')
+    t_unicode = type('')
 
     # Default is ANSI for Python 2.x
     t_default = t_ansi
@@ -243,7 +243,7 @@ class GuessStringType(object):
 
         # Get the types of all arguments for the function
         v_types   = [ type(item) for item in argv ]
-        v_types.extend( [ type(value) for (key, value) in argd.items() ] )
+        v_types.extend( [ type(value) for (key, value) in list(argd.items()) ] )
 
         # Get the appropriate function for the default type
         if self.t_default == t_ansi:
@@ -261,7 +261,7 @@ class GuessStringType(object):
                 for index in range(len(argv)):
                     if v_types[index] == t_ansi:
                         argv[index] = str(argv[index])
-                for (key, value) in argd.items():
+                for (key, value) in list(argd.items()):
                     if type(value) == t_ansi:
                         argd[key] = str(value)
 
@@ -338,13 +338,13 @@ def MakeANSIVersion(fn):
         t_ansi    = GuessStringType.t_ansi
         t_unicode = GuessStringType.t_unicode
         v_types   = [ type(item) for item in argv ]
-        v_types.extend( [ type(value) for (key, value) in argd.items() ] )
+        v_types.extend( [ type(value) for (key, value) in list(argd.items()) ] )
         if t_ansi in v_types:
             argv = list(argv)
             for index in range(len(argv)):
                 if v_types[index] == t_ansi:
                     argv[index] = t_unicode(argv[index])
-            for key, value in argd.items():
+            for key, value in list(argd.items()):
                 if type(value) == t_ansi:
                     argd[key] = t_unicode(value)
         return fn(*argv, **argd)
@@ -362,13 +362,13 @@ def MakeWideVersion(fn):
         t_ansi    = GuessStringType.t_ansi
         t_unicode = GuessStringType.t_unicode
         v_types   = [ type(item) for item in argv ]
-        v_types.extend( [ type(value) for (key, value) in argd.items() ] )
+        v_types.extend( [ type(value) for (key, value) in list(argd.items()) ] )
         if t_unicode in v_types:
             argv = list(argv)
             for index in range(len(argv)):
                 if v_types[index] == t_unicode:
                     argv[index] = t_ansi(argv[index])
-            for key, value in argd.items():
+            for key, value in list(argd.items()):
                 if type(value) == t_unicode:
                     argd[key] = t_ansi(value)
         return fn(*argv, **argd)

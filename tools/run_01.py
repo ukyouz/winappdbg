@@ -27,8 +27,8 @@ def main():
             # execv: https://github.com/MarioVilas/winappdbg/blob/master/winappdbg/debug.py#L274
             my_process = debug.execv([args.run])
 
-            print("Attached to %d - %s" % (my_process.get_pid(),
-                                           my_process.get_filename()))
+            print(("Attached to %d - %s" % (my_process.get_pid(),
+                                           my_process.get_filename())))
 
             # Keep debugging until the debugger stops
             debug.loop()
@@ -64,7 +64,7 @@ def main():
         table.addRow("WinAppDbg", winappdbg.version)
         table.addRow("Process Count", system.get_process_count())
 
-        print(table.getOutput())
+        print((table.getOutput()))
 
         table1 = winappdbg.Table("\t")
 
@@ -79,12 +79,12 @@ def main():
         table1.justify( 0, 1 )  # column 0 is now right justified
 
         # Let's find out how wide the table is.
-        print("Table width: %d" % table1.getWidth())
+        print(("Table width: %d" % table1.getWidth()))
 
         # Let's find out how many bytes would it be if written to a file.
-        print("Text size in characters: %d" % len( table1.getOutput() ))
+        print(("Text size in characters: %d" % len( table1.getOutput() )))
 
-        print(table1.getOutput())
+        print((table1.getOutput()))
 
     elif args.process:
         system = winappdbg.System()
@@ -109,7 +109,7 @@ def main():
         for key in sorted(processes.keys()):
             table.addRow(key, processes[key])
 
-        print(table.getOutput())
+        print((table.getOutput()))
 
     elif args.pname:
         debug = winappdbg.Debug()
@@ -120,13 +120,13 @@ def main():
         try:
             debug.system.scan()
             for (process, name) in debug.system.find_processes_by_filename(args.pname):
-                print("Found %d, %s" % (process.get_pid(),
-                                        process.get_filename()))
+                print(("Found %d, %s" % (process.get_pid(),
+                                        process.get_filename())))
 
                 debug.attach(process.get_pid())
 
-                print("Attached to %d-%s" % (process.get_pid(),
-                                            process.get_filename()))
+                print(("Attached to %d-%s" % (process.get_pid(),
+                                            process.get_filename())))
 
             debug.loop()
 
@@ -134,7 +134,7 @@ def main():
             debug.stop()
 
     else:
-        print("%s not found." % (args.run))
+        print(("%s not found." % (args.run)))
 
 def main1():
     parser = argparse.ArgumentParser(description="WinAppDbg stuff.")
@@ -160,8 +160,8 @@ def main1():
                 # execl: https://github.com/MarioVilas/winappdbg/blob/master/winappdbg/debug.py#L358
                 my_process = debug.execl(myargs)
 
-                print("Started %d - %s" % (my_process.get_pid(),
-                                           my_process.get_filename()))
+                print(("Started %d - %s" % (my_process.get_pid(),
+                                           my_process.get_filename())))
 
                 # Keep debugging until the debugger stops
                 debug.loop()
@@ -172,7 +172,7 @@ def main1():
                 print("Debugger stopped.")
 
         else:
-            print("%s not found." % (args.run[0]))
+            print(("%s not found." % (args.run[0])))
 
 if __name__ == "__main__":
     #main(['-r', 'c:\\windows\\system32\\notepad.exe'])

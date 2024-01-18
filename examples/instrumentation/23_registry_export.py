@@ -70,7 +70,7 @@ def reg_export( reg_path, filename ):
                 output.write( "@=\"%s\"\r\n" % default )
 
             # For each value in the key...
-            for name, value in key.iteritems():
+            for name, value in key.items():
 
                 # Skip the default value since we already wrote it.
                 if not name:
@@ -98,7 +98,7 @@ def reg_export( reg_path, filename ):
                         elif type(value) == str:
                             value = "\0".join(value)
                         else:
-                            value = u"\0".join(value)
+                            value = "\0".join(value)
                     if type(value) == str:
                         s_value = reg_hexa(value, t_value)
                     else:

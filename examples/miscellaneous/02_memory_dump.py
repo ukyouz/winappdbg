@@ -46,11 +46,11 @@ system.scan_processes()
 
 # Get all processes that match the requested filenames.
 for filename in sys.argv[1:]:
-    print "Looking for: %s" % filename
+    print("Looking for: %s" % filename)
     for process, pathname in system.find_processes_by_filename(filename):
         pid  = process.get_pid()
         bits = process.get_bits()
-        print "Dumping memory for process ID %d (%d bits)" % (pid, bits)
+        print("Dumping memory for process ID %d (%d bits)" % (pid, bits))
 
         # Parse the database filename.
         dbfile   = '%d.db' % pid
@@ -62,7 +62,7 @@ for filename in sys.argv[1:]:
                     break
                 counter += 1
             del counter
-        print "Creating database %s" % dbfile
+        print("Creating database %s" % dbfile)
 
         # Connect to the database and get a cursor.
         database = sqlite.connect(dbfile)
@@ -155,10 +155,10 @@ for filename in sys.argv[1:]:
             # Read the data contained in the memory block, if any.
             Data = None
             if mbi.has_content():
-                print 'Reading %s-%s' % (
+                print('Reading %s-%s' % (
                     winappdbg.HexDump.address(BaseAddress, bits),
                     winappdbg.HexDump.address(BaseAddress + RegionSize, bits)
-                )
+                ))
                 Data = process.read(BaseAddress, RegionSize)
                 Data = zlib.compress(Data, zlib.Z_BEST_COMPRESSION)
                 Data = sqlite.Binary(Data)
@@ -173,5 +173,5 @@ for filename in sys.argv[1:]:
         database.commit()
         cursor.close()
         database.close()
-        print "Ok."
-print "Done."
+        print("Ok.")
+print("Done.")

@@ -333,9 +333,9 @@ class Main (object):
                 self.process = Process(self.pid)
                 self.process.get_handle()
             except WindowsError:
-                print("Can't open process %d, skipping" % self.pid)
+                print(("Can't open process %d, skipping" % self.pid))
                 if self.options.verbose:
-                    print
+                    print()
                 continue
 
             # Get a list of allocated memory regions
@@ -406,17 +406,17 @@ class Main (object):
                 if not searcher.found():
                     break
                 if self.options.verbose:
-                    print(searcher.message(self.pid, address - shift, data))
-                    print
+                    print((searcher.message(self.pid, address - shift, data)))
+                    print()
                 else:
-                    print(searcher.message(self.pid, address - shift))
+                    print((searcher.message(self.pid, address - shift)))
 
     def run(self):
 
         # Banner
         print("Process memory finder")
         print("by Mario Vilas (mvilas at gmail.com)")
-        print
+        print()
 
         # Parse the command line
         self.parse_cmdline()

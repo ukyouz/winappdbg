@@ -784,7 +784,7 @@ def GetModuleFileNameW(hProcess, hModule = None):
 
     nSize = MAX_PATH
     while 1:
-        lpFilename = ctypes.create_unicode_buffer(u"", nSize)
+        lpFilename = ctypes.create_unicode_buffer("", nSize)
         nCopied = _GetModuleFileNameW(hModule, lpFilename, nSize)
         if nCopied == 0:
             raise ctypes.WinError()
@@ -824,7 +824,7 @@ def GetFullPathNameW(lpFileName):
     nBufferLength = _GetFullPathNameW(lpFileName, 0, None, None)
     if nBufferLength <= 0:
         raise ctypes.WinError()
-    lpBuffer   = ctypes.create_unicode_buffer(u'', nBufferLength + 1)
+    lpBuffer   = ctypes.create_unicode_buffer('', nBufferLength + 1)
     lpFilePart = LPWSTR()
     nCopied = _GetFullPathNameW(lpFileName, nBufferLength, lpBuffer, byref(lpFilePart))
     if nCopied > nBufferLength or nCopied == 0:
