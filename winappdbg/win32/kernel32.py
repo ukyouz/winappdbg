@@ -3724,7 +3724,7 @@ def WriteProcessMemory(hProcess, lpBaseAddress, lpBuffer):
     _WriteProcessMemory.restype  = bool
 
     nSize                   = len(lpBuffer)
-    lpBuffer                = ctypes.create_string_buffer(lpBuffer)
+    # lpBuffer                = ctypes.create_string_buffer(lpBuffer)
     lpNumberOfBytesWritten  = SIZE_T(0)
     success = _WriteProcessMemory(hProcess, lpBaseAddress, lpBuffer, nSize, byref(lpNumberOfBytesWritten))
     if not success and GetLastError() != ERROR_PARTIAL_COPY:
