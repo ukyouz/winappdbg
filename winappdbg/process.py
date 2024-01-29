@@ -186,7 +186,13 @@ class Process (_ThreadContainer, _ModuleContainer):
         if not self.fileName:
             self.fileName = self.get_image_name()
         if isinstance(self.fileName, bytes):
-            self.fileName = self.fileName.decode()
+            from contextlib import suppress
+            for enc in ("utf-8", "shift-jis"):
+                with suppress(UnicodeDecodeError):
+                    self.fileName = self.fileName.decode(enc)
+                    break
+            else:
+                self.fileName = str(self.fileName)
         return self.fileName
 
     def open_handle(self, dwDesiredAccess = win32.PROCESS_ALL_ACCESS):
