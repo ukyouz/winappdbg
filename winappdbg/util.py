@@ -295,7 +295,10 @@ class PathOperations (StaticClass):
         # There are probably some native paths that
         # won't be converted by this naive approach.
         if isinstance(name, bytes):
-            name = name.decode()
+            try:
+                name = name.decode()
+            except UnicodeDecodeError:
+                name = name.decode("cp932")
 
         if name.startswith("\\"):
             if name.startswith("\\??\\"):
